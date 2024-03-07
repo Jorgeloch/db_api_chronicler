@@ -1,29 +1,29 @@
-package TagClientService
+package TagCustomerService
 
 import (
-	TagClientDTO "atividade_4/src/tag-cliente/dto"
-	TagClientModel "atividade_4/src/tag-cliente/model"
-	TagClientRepository "atividade_4/src/tag-cliente/repository"
+	TagCustomerDTO "atividade_4/src/tag-cliente/dto"
+	TagCustomerModel "atividade_4/src/tag-cliente/model"
+	TagCustomerRepository "atividade_4/src/tag-cliente/repository"
 )
 
-type TagClientService struct {
-	repository *TagClientRepository.TagClientRepository
+type TagCustomerService struct {
+	repository *TagCustomerRepository.TagCustomerRepository
 }
 
-func InitTagClientService(repository *TagClientRepository.TagClientRepository) *TagClientService {
-	return &TagClientService{
+func InitTagCustomerService(repository *TagCustomerRepository.TagCustomerRepository) *TagCustomerService {
+	return &TagCustomerService{
 		repository: repository,
 	}
 }
 
-func (service *TagClientService) FindByClient(ClienteCPF string) ([]TagClientModel.TagClient, error) {
-	return service.repository.FindByClient(ClienteCPF)
+func (service *TagCustomerService) FindByCustomer(CustomereCPF string) ([]TagCustomerModel.TagCustomer, error) {
+	return service.repository.FindByCustomer(CustomereCPF)
 }
 
-func (service *TagClientService) Create(dto TagClientDTO.TagClientCreateDTO) error {
-	model := TagClientModel.TagClient{
-		ClienteCPF: dto.ClienteCPF,
-		Tag_id:     dto.Tag_id,
+func (service *TagCustomerService) Create(dto TagCustomerDTO.TagCustomerCreateDTO) error {
+	model := TagCustomerModel.TagCustomer{
+		CustomerCPF: dto.CustomerCPF,
+		Tag_id:      dto.Tag_id,
 	}
 
 	err := service.repository.Create(model)
@@ -31,10 +31,10 @@ func (service *TagClientService) Create(dto TagClientDTO.TagClientCreateDTO) err
 	return err
 }
 
-func (service *TagClientService) FindAll() ([]TagClientModel.TagClient, error) {
+func (service *TagCustomerService) FindAll() ([]TagCustomerModel.TagCustomer, error) {
 	return service.repository.FindAll()
 }
 
-func (service *TagClientService) Delete(ClienteCPF string, TagID string) error {
-	return service.repository.Delete(ClienteCPF, TagID)
+func (service *TagCustomerService) Delete(CustomereCPF string, TagID string) error {
+	return service.repository.Delete(CustomereCPF, TagID)
 }

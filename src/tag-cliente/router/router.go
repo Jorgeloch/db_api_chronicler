@@ -1,9 +1,9 @@
-package TagClientRouter
+package TagCustomerRouter
 
 import (
-	TagClientController "atividade_4/src/tag-cliente/controller"
-	TagClientRepository "atividade_4/src/tag-cliente/repository"
-	TagClientService "atividade_4/src/tag-cliente/service"
+	TagCustomerController "atividade_4/src/tag-cliente/controller"
+	TagCustomerRepository "atividade_4/src/tag-cliente/repository"
+	TagCustomerService "atividade_4/src/tag-cliente/service"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,14 +11,14 @@ import (
 func NewManagerRouter() *fiber.App {
 	router := fiber.New()
 
-	repository := TagClientRepository.InitTagRepository()
-	service := TagClientService.InitTagClientService(repository)
-	controller := TagClientController.InitTagClientController(service)
+	repository := TagCustomerRepository.InitTagRepository()
+	service := TagCustomerService.InitTagCustomerService(repository)
+	controller := TagCustomerController.InitTagCustomerController(service)
 
 	router.Get("/", controller.HandleFindAll)
-	router.Get("/:cliente_cpf", controller.HandleFindByClient)
-	router.Post("/", controller.HandleCreateTagClient)
-	router.Delete("/cliente/:cliente_cpf/tag/:tag_id", controller.HandleDeleteTagClient)
+	router.Post("/", controller.HandleCreateTagCustomer)
+	router.Get("/:cliente_cpf", controller.HandleFindByCustomer)
+	router.Delete("/cliente/:cliente_cpf/tag/:tag_id", controller.HandleDeleteTagCustomer)
 
 	return router
 }

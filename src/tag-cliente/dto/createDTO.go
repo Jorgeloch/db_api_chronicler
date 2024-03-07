@@ -1,6 +1,6 @@
-package TagClientDTO
+package TagCustomerDTO
 
-type TagClientCreateDTO struct {
-	Tag_id     int    `json:"tag_id"`
-	ClienteCPF string `json:"cliente_cpf"`
+type TagCustomerCreateDTO struct {
+	Tag_id      int    `json:"tag_id"`
+	CustomerCPF string `json:"cliente_cpf"`
 }

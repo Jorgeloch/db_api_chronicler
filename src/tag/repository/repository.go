@@ -46,7 +46,7 @@ func (repository *TagRepository) FindByID(id string) (tagModel.Tag, error) {
 		`
     SELECT * FROM tag
     WHERE id = $1 
-    `, id).Scan(&tag)
+    `, id).Scan(&tag.ID, &tag.Nome, &tag.Cor)
 
 	if err != nil {
 		return tag, err
@@ -57,19 +57,17 @@ func (repository *TagRepository) FindByID(id string) (tagModel.Tag, error) {
 
 func (repository *TagRepository) Create(tag tagModel.Tag) error {
 	args := pgx.NamedArgs{
-		"id":         tag.ID,
-		"nome":       tag.Nome,
-		"cor":        tag.Cor,
-		"created_at": tag.CreatedAt,
-		"updated_at": tag.UpdatedAt,
+		"id":   tag.ID,
+		"nome": tag.Nome,
+		"cor":  tag.Cor,
 	}
 
 	_, err := repository.db.Exec(context.Background(),
 		`
     INSERT INTO tag
-    (id, nome, cor, updated_at, created_at) 
+    (id, nome, cor) 
     VALUES 
-    (@id, @nome, @cor, @updated_at, @created_at)
+    (@id, @nome, @cor)
     `, args)
 
 	return err
@@ -77,17 +75,15 @@ func (repository *TagRepository) Create(tag tagModel.Tag) error {
 
 func (repository *TagRepository) Update(tag tagModel.Tag) error {
 	args := pgx.NamedArgs{
-		"id":         tag.ID,
-		"nome":       tag.Nome,
-		"cor":        tag.Cor,
-		"created_at": tag.CreatedAt,
-		"updated_at": tag.UpdatedAt,
+		"id":   tag.ID,
+		"nome": tag.Nome,
+		"cor":  tag.Cor,
 	}
 
 	_, err := repository.db.Exec(context.Background(),
 		`
     UPDATE tag
-    SET nome = @nome, cor = @cor, updated_at = @updated_at
+    SET nome = @nome, cor = @cor
     WHERE id = @id
     `, args)
 

@@ -30,7 +30,7 @@ func InitCustomerRepository() *CustomerRepository {
 func (repository *CustomerRepository) FindAll() ([]customerModel.Customer, error) {
 	rows, _ := repository.db.Query(context.Background(),
 		`
-    SELECT * FROM customer
+    SELECT * FROM cliente
     `)
 
 	customers, err := pgx.CollectRows(rows, pgx.RowToStructByName[customerModel.Customer])
@@ -44,7 +44,7 @@ func (repository *CustomerRepository) FindByID(cpf string) (customerModel.Custom
 	var customer customerModel.Customer
 	err := repository.db.QueryRow(context.Background(),
 		`
-    SELECT * FROM customer
+    SELECT * FROM cliente
     WHERE cpf = $1 
     `, cpf).Scan(&customer)
 
@@ -68,7 +68,7 @@ func (repository *CustomerRepository) Create(customer customerModel.Customer) er
 
 	_, err := repository.db.Exec(context.Background(),
 		`
-    INSERT INTO customer
+    INSERT INTO cliente
     (cpf, nome, profissao, data_nascimento, telefone, updated_at, created_at) 
     VALUES 
     (@cpf @nome, @profissao, @data_nascimento, @telefone, @updated_at, @created_at)
@@ -90,7 +90,7 @@ func (repository *CustomerRepository) Update(customer customerModel.Customer) er
 
 	_, err := repository.db.Exec(context.Background(),
 		`
-    UPDATE customer
+    UPDATE cliente
     SET cpf = @cpf, 
         nome = @nome, 
         profissao = @profissao, 
@@ -106,7 +106,7 @@ func (repository *CustomerRepository) Update(customer customerModel.Customer) er
 func (repository *CustomerRepository) Delete(cpf string) error {
 	_, err := repository.db.Exec(context.Background(),
 		`
-    DELETE FROM customer
+    DELETE FROM cliente
     WHERE cpf = $1
     `, cpf)
 

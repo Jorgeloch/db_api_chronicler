@@ -1,14 +1,14 @@
-package TagClientRepository
+package TagCustomerRepository
 
 import (
-	TagClientModel "atividade_4/src/tag-cliente/model"
+	TagCustomerModel "atividade_4/src/tag-cliente/model"
 	"context"
 	"os"
 
 	"github.com/jackc/pgx/v5"
 )
 
-type TagClientRepository struct {
+type TagCustomerRepository struct {
 	db *pgx.Conn
 }
 
@@ -21,33 +21,33 @@ func InitConnection() *pgx.Conn {
 	return db
 }
 
-func InitTagRepository() *TagClientRepository {
-	return &TagClientRepository{
+func InitTagRepository() *TagCustomerRepository {
+	return &TagCustomerRepository{
 		db: InitConnection(),
 	}
 }
 
-func (repository *TagClientRepository) FindAll() ([]TagClientModel.TagClient, error) {
+func (repository *TagCustomerRepository) FindAll() ([]TagCustomerModel.TagCustomer, error) {
 	rows, _ := repository.db.Query(context.Background(),
 		`
-    SELECT * FROM tag_has_client
+    SELECT * FROM cliente_has_tag
     `)
 
-	tags, err := pgx.CollectRows(rows, pgx.RowToStructByName[TagClientModel.TagClient])
+	tags, err := pgx.CollectRows(rows, pgx.RowToStructByName[TagCustomerModel.TagCustomer])
 	if err != nil {
 		return nil, err
 	}
 	return tags, nil
 }
 
-func (repository *TagClientRepository) FindByClient(cpf string) ([]TagClientModel.TagClient, error) {
+func (repository *TagCustomerRepository) FindByCustomer(cpf string) ([]TagCustomerModel.TagCustomer, error) {
 	rows, _ := repository.db.Query(context.Background(),
 		`
-    SELECT * FROM tag_has_client
+    SELECT * FROM cliente_has_tag
     WHERE cliente_cpf = $1 
     `, cpf)
 
-	tags, err := pgx.CollectRows(rows, pgx.RowToStructByName[TagClientModel.TagClient])
+	tags, err := pgx.CollectRows(rows, pgx.RowToStructByName[TagCustomerModel.TagCustomer])
 
 	if err != nil {
 		return tags, err
@@ -55,14 +55,14 @@ func (repository *TagClientRepository) FindByClient(cpf string) ([]TagClientMode
 	return tags, nil
 }
 
-func (repository *TagClientRepository) Create(tagClient TagClientModel.TagClient) error {
+func (repository *TagCustomerRepository) Create(tagCustomer TagCustomerModel.TagCustomer) error {
 	args := pgx.NamedArgs{
-		"cliente_cpf": tagClient.ClienteCPF,
-		"tag_id":      tagClient.Tag_id,
+		"cliente_cpf": tagCustomer.CustomerCPF,
+		"tag_id":      tagCustomer.Tag_id,
 	}
 	_, err := repository.db.Exec(context.Background(),
 		`
-    INSERT INTO tag_has_client
+    INSERT INTO cliente_has_tag
     (cliente_cpf, tag_id) 
     VALUES 
     (@cliente_cpf, @tag_id)
@@ -71,12 +71,12 @@ func (repository *TagClientRepository) Create(tagClient TagClientModel.TagClient
 	return err
 }
 
-func (repository *TagClientRepository) Delete(ClienteCPF string, TagID string) error {
+func (repository *TagCustomerRepository) Delete(CustomerCPF string, TagID string) error {
 	_, err := repository.db.Exec(context.Background(),
 		`
-    DELETE FROM tag_has_client
+    DELETE FROM cliente_has_tag
     WHERE cliente_cpf = $1 AND tag_id = $2
-    `, ClienteCPF, TagID)
+    `, CustomerCPF, TagID)
 	if err != nil {
 		return err
 	}

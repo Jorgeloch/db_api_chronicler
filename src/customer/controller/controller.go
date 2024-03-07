@@ -3,6 +3,8 @@ package customerController
 import (
 	customerDTO "atividade_4/src/customer/dto"
 	customerService "atividade_4/src/customer/service"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,6 +21,7 @@ func InitCustomerController(s *customerService.CustomerService) *CustomerControl
 func (controller *CustomerController) HandleFindAll(c *fiber.Ctx) error {
 	customers, err := controller.service.FindAll()
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	return c.Status(fiber.StatusOK).JSON(customers)
@@ -29,6 +32,7 @@ func (controller *CustomerController) HandleFindByID(c *fiber.Ctx) error {
 
 	customer, err := controller.service.FindByID(cpf)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -40,11 +44,13 @@ func (controller *CustomerController) HandleCreateCustomer(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&customerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
 	newCustomerCPF, err := controller.service.Create(customerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -58,6 +64,7 @@ func (controller *CustomerController) HandleUpdateCustomer(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&customerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
@@ -65,6 +72,7 @@ func (controller *CustomerController) HandleUpdateCustomer(c *fiber.Ctx) error {
 
 	customerUpdated, err := controller.service.Update(cpf, customerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -76,6 +84,7 @@ func (controller *CustomerController) HandleDeleteCustomer(c *fiber.Ctx) error {
 
 	err := controller.service.Delete(cpf)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	return c.SendStatus(fiber.StatusOK)

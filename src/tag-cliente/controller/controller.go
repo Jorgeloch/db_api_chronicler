@@ -1,63 +1,69 @@
-package TagClientController
+package TagCustomerController
 
 import (
-	TagClientDTO "atividade_4/src/tag-cliente/dto"
-	TagClientService "atividade_4/src/tag-cliente/service"
+	TagCustomerDTO "atividade_4/src/tag-cliente/dto"
+	TagCustomerService "atividade_4/src/tag-cliente/service"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type TagClientController struct {
-	service *TagClientService.TagClientService
+type TagCustomerController struct {
+	service *TagCustomerService.TagCustomerService
 }
 
-func InitTagClientController(s *TagClientService.TagClientService) *TagClientController {
-	return &TagClientController{
+func InitTagCustomerController(s *TagCustomerService.TagCustomerService) *TagCustomerController {
+	return &TagCustomerController{
 		service: s,
 	}
 }
 
-func (controller *TagClientController) HandleFindAll(c *fiber.Ctx) error {
-	TagClients, err := controller.service.FindAll()
+func (controller *TagCustomerController) HandleFindAll(c *fiber.Ctx) error {
+	TagCustomers, err := controller.service.FindAll()
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
-	return c.Status(fiber.StatusOK).JSON(TagClients)
+	return c.Status(fiber.StatusOK).JSON(TagCustomers)
 }
 
-func (controller *TagClientController) HandleFindByClient(c *fiber.Ctx) error {
-	ClienteCPF := c.Params("cliente_cpf")
+func (controller *TagCustomerController) HandleFindByCustomer(c *fiber.Ctx) error {
+	CustomerCPF := c.Params("customer_cpf")
 
-	TagClient, err := controller.service.FindByClient(ClienteCPF)
+	TagCustomer, err := controller.service.FindByCustomer(CustomerCPF)
 	if err != nil {
+		log.Println()
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(TagClient)
+	return c.Status(fiber.StatusOK).JSON(TagCustomer)
 }
 
-func (controller *TagClientController) HandleCreateTagClient(c *fiber.Ctx) error {
-	var TagClientDTO TagClientDTO.TagClientCreateDTO
+func (controller *TagCustomerController) HandleCreateTagCustomer(c *fiber.Ctx) error {
+	var TagCustomerDTO TagCustomerDTO.TagCustomerCreateDTO
 
-	err := c.BodyParser(&TagClientDTO)
+	err := c.BodyParser(&TagCustomerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	err = controller.service.Create(TagClientDTO)
+	err = controller.service.Create(TagCustomerDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	return c.SendStatus(fiber.StatusOK)
 }
 
-func (controller *TagClientController) HandleDeleteTagClient(c *fiber.Ctx) error {
-	ClienteCPF := c.Params("cliente_cpf")
+func (controller *TagCustomerController) HandleDeleteTagCustomer(c *fiber.Ctx) error {
+	CustomereCPF := c.Params("cliente_cpf")
 	TagID := c.Params("tag_id")
 
-	err := controller.service.Delete(ClienteCPF, TagID)
+	err := controller.service.Delete(CustomereCPF, TagID)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	return c.SendStatus(fiber.StatusOK)

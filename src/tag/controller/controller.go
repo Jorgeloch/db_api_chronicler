@@ -3,7 +3,10 @@ package tagController
 import (
 	tagDTO "atividade_4/src/tag/dto"
 	tagService "atividade_4/src/tag/service"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type TagController struct {
@@ -19,6 +22,7 @@ func InitTagController(s *tagService.TagService) *TagController {
 func (controller *TagController) HandleFindAll(c *fiber.Ctx) error {
 	tags, err := controller.service.FindAll()
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	return c.Status(fiber.StatusOK).JSON(tags)
@@ -29,6 +33,7 @@ func (controller *TagController) HandleFindByID(c *fiber.Ctx) error {
 
 	tag, err := controller.service.FindByID(id)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -40,12 +45,18 @@ func (controller *TagController) HandleCreateTag(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&tagDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
 	newTagID, err := controller.service.Create(tagDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+	if newTagID == uuid.Nil {
+		log.Println("falha na verificacao da cor hexadecimal")
+		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -58,6 +69,7 @@ func (controller *TagController) HandleUpdateTag(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&tagDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
@@ -65,6 +77,7 @@ func (controller *TagController) HandleUpdateTag(c *fiber.Ctx) error {
 
 	tagUpdated, err := controller.service.Update(id, tagDTO)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -76,6 +89,7 @@ func (controller *TagController) HandleDeleteTag(c *fiber.Ctx) error {
 
 	err := controller.service.Delete(id)
 	if err != nil {
+		log.Println(err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	return c.SendStatus(fiber.StatusOK)

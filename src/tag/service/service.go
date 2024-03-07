@@ -1,8 +1,6 @@
 package tagService
 
 import (
-	"time"
-
 	tagDTO "atividade_4/src/tag/dto"
 	tagModel "atividade_4/src/tag/model"
 	tagRepository "atividade_4/src/tag/repository"
@@ -28,11 +26,9 @@ func (service *TagService) Create(dto tagDTO.CreateTagDTO) (uuid.UUID, error) {
 		return uuid.Nil, nil
 	}
 	model := tagModel.Tag{
-		ID:        uuid.New(),
-		Nome:      dto.Nome,
-		Cor:       dto.Cor,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		ID:   uuid.New(),
+		Nome: dto.Nome,
+		Cor:  dto.Cor,
 	}
 
 	err := service.repository.Create(model)
@@ -56,8 +52,6 @@ func (service *TagService) Update(id string, dto tagDTO.UpdateTagDTO) (tagModel.
 	if dto.Cor != "" {
 		updatedTag.Cor = dto.Cor
 	}
-
-	updatedTag.UpdatedAt = time.Now()
 
 	err = service.repository.Update(updatedTag)
 
