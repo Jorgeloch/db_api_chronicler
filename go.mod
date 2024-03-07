@@ -6,6 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.2
 	github.com/google/uuid v1.5.0
 	github.com/jackc/pgx/v5 v5.5.4
+	github.com/klassmann/cpfcnpj v0.0.0-20200907140233-a595c5fd8de1
 )
 
 require (
