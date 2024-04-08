@@ -20,6 +20,10 @@ func (service *TagCustomerService) FindByCustomer(CustomereCPF string) ([]TagCus
 	return service.repository.FindByCustomer(CustomereCPF)
 }
 
+func (service *TagCustomerService) FindByTag(tagID string) ([]TagCustomerModel.TagCustomer, error) {
+	return service.repository.FindByTag(tagID)
+}
+
 func (service *TagCustomerService) Create(dto TagCustomerDTO.TagCustomerCreateDTO) error {
 	model := TagCustomerModel.TagCustomer{
 		CustomerCPF: dto.CustomerCPF,

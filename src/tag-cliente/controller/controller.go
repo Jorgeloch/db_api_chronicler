@@ -28,9 +28,20 @@ func (controller *TagCustomerController) HandleFindAll(c *fiber.Ctx) error {
 }
 
 func (controller *TagCustomerController) HandleFindByCustomer(c *fiber.Ctx) error {
-	CustomerCPF := c.Params("customer_cpf")
+	CustomerCPF := c.Params("cliente_cpf")
 
 	TagCustomer, err := controller.service.FindByCustomer(CustomerCPF)
+	if err != nil {
+		log.Println()
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(TagCustomer)
+}
+
+func (controller *TagCustomerController) HandleFindByTag(c *fiber.Ctx) error {
+	TagID := c.Params("tag_id")
+	TagCustomer, err := controller.service.FindByTag(TagID)
 	if err != nil {
 		log.Println()
 		return c.SendStatus(fiber.StatusInternalServerError)
@@ -54,7 +65,11 @@ func (controller *TagCustomerController) HandleCreateTagCustomer(c *fiber.Ctx) e
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":      "OK",
+		"cliente_cpf": TagCustomerDTO.CustomerCPF,
+		"tag_id":      TagCustomerDTO.Tag_id.String(),
+	})
 }
 
 func (controller *TagCustomerController) HandleDeleteTagCustomer(c *fiber.Ctx) error {
