@@ -1,12 +1,9 @@
 package customerService
 
 import (
-	"time"
-
 	customerDTO "atividade_4/src/customer/dto"
 	customerModel "atividade_4/src/customer/model"
 	customerRepository "atividade_4/src/customer/repository"
-	"github.com/google/uuid"
 )
 
 type CustomerService struct {
@@ -19,8 +16,8 @@ func InitCustomerService(r *customerRepository.CustomerRepository) *CustomerServ
 	}
 }
 
-func (service *CustomerService) FindByID(id string) (customerModel.Customer, error) {
-	return service.repository.FindByID(id)
+func (service *CustomerService) FindByID(cpf string) (customerModel.Customer, error) {
+	return service.repository.FindByID(cpf)
 }
 
 func (service *CustomerService) Create(dto customerDTO.CreateCustomerDTO) (string, error) {
@@ -31,11 +28,8 @@ func (service *CustomerService) Create(dto customerDTO.CreateCustomerDTO) (strin
 	model := customerModel.Customer{
 		CPF:            dto.CPF,
 		Nome:           dto.Nome,
-		Profissao:      dto.Profissao,
 		DataNascimento: dto.DataNascimento,
 		Telefone:       dto.Telefone,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
 	}
 
 	err := service.repository.Create(model)
@@ -49,12 +43,8 @@ func (service *CustomerService) Update(cpf string, dto customerDTO.UpdateCustome
 	if err != nil {
 		return updatedCustomer, err
 	}
-
 	if dto.Nome != "" {
 		updatedCustomer.Nome = dto.Nome
-	}
-	if dto.Profissao != uuid.Nil {
-		updatedCustomer.Profissao = dto.Profissao
 	}
 	if dto.DataNascimento.IsZero() {
 		updatedCustomer.DataNascimento = dto.DataNascimento
@@ -62,8 +52,6 @@ func (service *CustomerService) Update(cpf string, dto customerDTO.UpdateCustome
 	if dto.Telefone != nil {
 		updatedCustomer.Telefone = dto.Telefone
 	}
-
-	updatedCustomer.UpdatedAt = time.Now()
 
 	err = service.repository.Update(updatedCustomer)
 

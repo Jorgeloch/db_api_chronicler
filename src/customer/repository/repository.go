@@ -3,7 +3,6 @@ package customerRepository
 import (
 	customerModel "atividade_4/src/customer/model"
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -12,18 +11,9 @@ type CustomerRepository struct {
 	db *pgx.Conn
 }
 
-func InitConnection() *pgx.Conn {
-	URL := os.Getenv("DATABASE_URL")
-	db, err := pgx.Connect(context.Background(), URL)
-	if err != nil {
-		panic(err)
-	}
-	return db
-}
-
-func InitCustomerRepository() *CustomerRepository {
+func InitCustomerRepository(db *pgx.Conn) *CustomerRepository {
 	return &CustomerRepository{
-		db: InitConnection(),
+		db: db,
 	}
 }
 
@@ -44,9 +34,9 @@ func (repository *CustomerRepository) FindByID(cpf string) (customerModel.Custom
 	var customer customerModel.Customer
 	err := repository.db.QueryRow(context.Background(),
 		`
-    SELECT * FROM cliente
+    SELECT cpf, nome, telefone, data_nascimento FROM cliente
     WHERE cpf = $1 
-    `, cpf).Scan(&customer)
+    `, cpf).Scan(&customer.CPF, &customer.Nome, &customer.Telefone, &customer.DataNascimento)
 
 	if err != nil {
 		return customer, err
@@ -59,19 +49,16 @@ func (repository *CustomerRepository) Create(customer customerModel.Customer) er
 	args := pgx.NamedArgs{
 		"cpf":             customer.CPF,
 		"nome":            customer.Nome,
-		"profissao":       customer.Profissao,
 		"data_nascimento": customer.DataNascimento,
 		"telefone":        customer.Telefone,
-		"created_at":      customer.CreatedAt,
-		"updated_at":      customer.UpdatedAt,
 	}
 
 	_, err := repository.db.Exec(context.Background(),
 		`
     INSERT INTO cliente
-    (cpf, nome, profissao, data_nascimento, telefone, updated_at, created_at) 
+    (cpf, nome, data_nascimento, telefone)
     VALUES 
-    (@cpf @nome, @profissao, @data_nascimento, @telefone, @updated_at, @created_at)
+    (@cpf, @nome, @data_nascimento, @telefone)
     `, args)
 
 	return err
@@ -81,11 +68,8 @@ func (repository *CustomerRepository) Update(customer customerModel.Customer) er
 	args := pgx.NamedArgs{
 		"cpf":             customer.CPF,
 		"nome":            customer.Nome,
-		"profissao":       customer.Profissao,
 		"data_nascimento": customer.DataNascimento,
 		"telefone":        customer.Telefone,
-		"created_at":      customer.CreatedAt,
-		"updated_at":      customer.UpdatedAt,
 	}
 
 	_, err := repository.db.Exec(context.Background(),
@@ -93,10 +77,8 @@ func (repository *CustomerRepository) Update(customer customerModel.Customer) er
     UPDATE cliente
     SET cpf = @cpf, 
         nome = @nome, 
-        profissao = @profissao, 
         data_nascimento = @data_nascimento, 
-        telefone = @telefone, 
-        updated_at = @updated_at
+        telefone = @telefone 
     WHERE cpf = @cpf
     `, args)
 
