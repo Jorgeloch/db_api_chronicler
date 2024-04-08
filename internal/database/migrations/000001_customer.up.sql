@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS cliente (
+  cpf VARCHAR(11) UNIQUE NOT NULL,
+  nome VARCHAR(45) NOT NULL,
+  data_nascimento DATE NOT NULL,
+  telefone VARCHAR(12)[] NOT NULL,
+  PRIMARY KEY(cpf)
+);
+
