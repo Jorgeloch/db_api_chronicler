@@ -4,13 +4,15 @@ import (
 	tagController "atividade_4/src/tag/controller"
 	tagRepository "atividade_4/src/tag/repository"
 	tagService "atividade_4/src/tag/service"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v5"
 )
 
-func NewTagRouter() *fiber.App {
+func NewTagRouter(db *pgx.Conn) *fiber.App {
 	router := fiber.New()
 
-	repository := tagRepository.InitTagRepository()
+	repository := tagRepository.InitTagRepository(db)
 	service := tagService.InitTagService(repository)
 	controller := tagController.InitTagController(service)
 

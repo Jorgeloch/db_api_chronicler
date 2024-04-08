@@ -3,7 +3,6 @@ package tagRepository
 import (
 	tagModel "atividade_4/src/tag/model"
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -12,18 +11,9 @@ type TagRepository struct {
 	db *pgx.Conn
 }
 
-func InitConnection() *pgx.Conn {
-	URL := os.Getenv("DATABASE_URL")
-	db, err := pgx.Connect(context.Background(), URL)
-	if err != nil {
-		panic(err)
-	}
-	return db
-}
-
-func InitTagRepository() *TagRepository {
+func InitTagRepository(db *pgx.Conn) *TagRepository {
 	return &TagRepository{
-		db: InitConnection(),
+		db: db,
 	}
 }
 
